@@ -1,10 +1,12 @@
 import { Link, useParams } from "react-router-dom";
 import { products } from "../data/products";
 import { useCart } from "../context/CartContext";
+import { useFavorites } from "../context/FavoritesContext";
 
 export default function ProductPage() {
   const { id } = useParams();
   const { addToCart } = useCart();
+  const { toggleFavorite, isFavorite } = useFavorites();
 
   const product = products.find((item) => item.id === id);
 
@@ -16,6 +18,8 @@ export default function ProductPage() {
       </div>
     );
   }
+
+  const favorite = isFavorite(product.id);
 
   return (
     <section
@@ -58,22 +62,41 @@ export default function ProductPage() {
           {product.description}
         </p>
 
-        <button
-          onClick={() => addToCart(product)}
-          style={{
-            width: "fit-content",
-            minHeight: 48,
-            padding: "0 18px",
-            borderRadius: 14,
-            border: "none",
-            background: "#111827",
-            color: "white",
-            fontWeight: 700,
-            cursor: "pointer",
-          }}
-        >
-          Add to cart
-        </button>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <button
+            onClick={() => addToCart(product)}
+            style={{
+              width: "fit-content",
+              minHeight: 48,
+              padding: "0 18px",
+              borderRadius: 14,
+              border: "none",
+              background: "#111827",
+              color: "white",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            Add to cart
+          </button>
+
+          <button
+            onClick={() => toggleFavorite(product.id)}
+            style={{
+              width: "fit-content",
+              minHeight: 48,
+              padding: "0 18px",
+              borderRadius: 14,
+              border: "1px solid #d4d4d8",
+              background: favorite ? "#111827" : "white",
+              color: favorite ? "white" : "#111827",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            {favorite ? "Saved to favorites" : "Save to favorites"}
+          </button>
+        </div>
       </div>
     </section>
   );

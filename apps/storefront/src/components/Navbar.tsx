@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useFavorites } from "../context/FavoritesContext";
 
 export default function Navbar() {
   const { itemCount } = useCart();
+  const { count } = useFavorites();
 
   return (
     <nav
@@ -34,6 +36,9 @@ export default function Navbar() {
         <Link to="/catalog" style={{ textDecoration: "none", color: "#111827", fontWeight: 600 }}>
           Catalog
         </Link>
+        <span style={{ color: "#52525b", fontWeight: 600 }}>
+          Favorites ({count})
+        </span>
         <Link to="/cart" style={{ textDecoration: "none", color: "#111827", fontWeight: 700 }}>
           Cart ({itemCount})
         </Link>
