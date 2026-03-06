@@ -36,9 +36,12 @@ export default function Navbar() {
         <Link to="/catalog" style={{ textDecoration: "none", color: "#111827", fontWeight: 600 }}>
           Catalog
         </Link>
-        <span style={{ color: "#52525b", fontWeight: 600 }}>
+        <Link
+          to="/favorites"
+          style={{ textDecoration: "none", color: "#111827", fontWeight: 600 }}
+        >
           Favorites ({count})
-        </span>
+        </Link>
         <Link to="/cart" style={{ textDecoration: "none", color: "#111827", fontWeight: 700 }}>
           Cart ({itemCount})
         </Link>

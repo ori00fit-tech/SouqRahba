@@ -1,4 +1,11 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
 type FavoritesContextType = {
   favorites: string[];
@@ -9,8 +16,18 @@ type FavoritesContextType = {
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
 
+const FAVORITES_STORAGE_KEY = "souq-mazellige-favorites";
+
 export function FavoritesProvider({ children }: { children: ReactNode }) {
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    const saved = window.localStorage.getItem(FAVORITES_STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favorites));
+  }, [favorites]);
 
   const toggleFavorite = (id: string) => {
     setFavorites((current) =>

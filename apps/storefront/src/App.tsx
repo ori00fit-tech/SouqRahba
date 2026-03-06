@@ -7,6 +7,8 @@ import HomePage from "./pages/HomePage";
 import CatalogPage from "./pages/CatalogPage";
 import ProductPage from "./pages/ProductPage";
 import CartPage from "./pages/CartPage";
+import FavoritesPage from "./pages/FavoritesPage";
+import CheckoutPage from "./pages/CheckoutPage";
 
 export default function App() {
   return (
@@ -21,7 +23,9 @@ export default function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/catalog" element={<CatalogPage />} />
                 <Route path="/product/:id" element={<ProductPage />} />
+                <Route path="/favorites" element={<FavoritesPage />} />
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
               </Routes>
             </div>
           </AppShell>

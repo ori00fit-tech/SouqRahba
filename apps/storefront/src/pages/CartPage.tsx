@@ -70,20 +70,23 @@ export default function CartPage() {
             <strong style={{ fontSize: 24 }}>Total: {total} MAD</strong>
 
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <button
+              <Link
+                to="/checkout"
                 style={{
                   minHeight: 46,
-                  padding: "0 18px",
+                  padding: "10px 18px",
                   borderRadius: 12,
                   border: "none",
                   background: "#111827",
                   color: "white",
                   fontWeight: 700,
-                  cursor: "pointer",
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
                 }}
               >
                 Checkout
-              </button>
+              </Link>
 
               <button
                 onClick={clearCart}
