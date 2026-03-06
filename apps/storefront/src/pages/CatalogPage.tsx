@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import { products } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
+import { useToast } from "../context/ToastContext";
 
 const categories = ["All", ...Array.from(new Set(products.map((p) => p.category)))];
 
 export default function CatalogPage() {
   const { addToCart } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { showToast } = useToast();
 
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -121,7 +123,16 @@ export default function CatalogPage() {
                   <strong>{product.price} MAD</strong>
                 </div>
 
-                <div style={{ color: "#71717a", fontWeight: 600 }}>by {product.vendor}</div>
+                <Link
+                  to={`/vendor/${product.vendorId}`}
+                  style={{
+                    color: "#71717a",
+                    fontWeight: 700,
+                    textDecoration: "none",
+                  }}
+                >
+                  by {product.vendor}
+                </Link>
 
                 <p style={{ margin: 0, color: "#52525b", lineHeight: 1.6 }}>
                   {product.description}
@@ -145,7 +156,10 @@ export default function CatalogPage() {
                   </Link>
 
                   <button
-                    onClick={() => addToCart(product)}
+                    onClick={() => {
+                      addToCart(product);
+                      showToast("Product added to cart");
+                    }}
                     style={{
                       minHeight: 44,
                       padding: "10px 16px",
@@ -161,7 +175,10 @@ export default function CatalogPage() {
                   </button>
 
                   <button
-                    onClick={() => toggleFavorite(product.id)}
+                    onClick={() => {
+                      toggleFavorite(product.id);
+                      showToast(favorite ? "Removed from favorites" : "Saved to favorites");
+                    }}
                     style={{
                       minHeight: 44,
                       padding: "10px 16px",
