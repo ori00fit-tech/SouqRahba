@@ -1,0 +1,21 @@
+{
+  "name": "souq-mazellige-blueprint",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "dev:storefront": "pnpm --filter @apps/storefront dev",
+    "dev:seller": "pnpm --filter @apps/seller-portal dev",
+    "dev:admin": "pnpm --filter @apps/admin dev",
+    "dev:api": "pnpm --filter @workers/api dev",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0",
+    "typescript": "^5.7.2"
+  }
+}

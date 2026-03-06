@@ -1,0 +1,9 @@
+{
+  "name": "@workers/media",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {"dev": "wrangler dev", "build": "wrangler deploy --dry-run", "typecheck": "tsc --noEmit"},
+  "dependencies": {"hono": "^4.6.15"},
+  "devDependencies": {"typescript": "^5.7.2", "wrangler": "^4.3.0"}
+}

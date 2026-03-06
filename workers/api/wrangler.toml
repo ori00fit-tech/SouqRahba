@@ -1,0 +1,16 @@
+name = "souq-mazellige-api"
+main = "src/index.ts"
+compatibility_date = "2026-03-06"
+[[d1_databases]]
+binding = "DB"
+database_name = "souq-mazellige"
+database_id = "REPLACE_D1_DATABASE_ID"
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "souq-mazellige-media"
+[[kv_namespaces]]
+binding = "APP_CACHE"
+id = "REPLACE_KV_ID"
+[[queues.producers]]
+binding = "EVENTS_QUEUE"
+queue = "souq-mazellige-events"
