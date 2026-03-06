@@ -2,7 +2,14 @@ import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
 export default function CartPage() {
-  const { items, removeFromCart, clearCart, total } = useCart();
+  const {
+    items,
+    removeFromCart,
+    clearCart,
+    total,
+    increaseQuantity,
+    decreaseQuantity,
+  } = useCart();
 
   return (
     <section style={{ display: "grid", gap: 24 }}>
@@ -34,11 +41,51 @@ export default function CartPage() {
               >
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                   <h3 style={{ margin: 0 }}>{item.name}</h3>
-                  <strong>{item.price} MAD</strong>
+                  <strong>{item.price * item.quantity} MAD</strong>
                 </div>
 
-                <div style={{ color: "#71717a" }}>Quantity: {item.quantity}</div>
                 <div style={{ color: "#71717a" }}>Vendor: {item.vendor}</div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <span style={{ color: "#71717a" }}>Quantity:</span>
+
+                  <button
+                    onClick={() => decreaseQuantity(item.id)}
+                    style={{
+                      minWidth: 36,
+                      height: 36,
+                      borderRadius: 10,
+                      border: "1px solid #d4d4d8",
+                      background: "white",
+                      cursor: "pointer",
+                    }}
+                  >
+                    -
+                  </button>
+
+                  <strong>{item.quantity}</strong>
+
+                  <button
+                    onClick={() => increaseQuantity(item.id)}
+                    style={{
+                      minWidth: 36,
+                      height: 36,
+                      borderRadius: 10,
+                      border: "1px solid #d4d4d8",
+                      background: "white",
+                      cursor: "pointer",
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
 
                 <button
                   onClick={() => removeFromCart(item.id)}

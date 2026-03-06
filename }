@@ -1,39 +1,99 @@
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { products } from "../data/products";
-import { useFavorites } from "../context/FavoritesContext";
 import { useCart } from "../context/CartContext";
+import { useFavorites } from "../context/FavoritesContext";
 import { useToast } from "../context/ToastContext";
 
-export default function FavoritesPage() {
-  const { favorites, toggleFavorite } = useFavorites();
+const categories = ["All", ...Array.from(new Set(products.map((p) => p.category)))];
+
+export default function CatalogPage() {
   const { addToCart } = useCart();
+  const { toggleFavorite, isFavorite } = useFavorites();
   const { showToast } = useToast();
 
-  const favoriteProducts = products.filter((product) => favorites.includes(product.id));
+  const [query, setQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      const matchesQuery =
+        product.name.toLowerCase().includes(query.toLowerCase()) ||
+        product.vendor.toLowerCase().includes(query.toLowerCase()) ||
+        product.description.toLowerCase().includes(query.toLowerCase());
+
+      const matchesCategory =
+        selectedCategory === "All" || product.category === selectedCategory;
+
+      return matchesQuery && matchesCategory;
+    });
+  }, [query, selectedCategory]);
 
   return (
     <section style={{ display: "grid", gap: 24 }}>
       <div>
-        <h1 style={{ margin: 0, fontSize: "clamp(32px, 6vw, 56px)" }}>Favorites</h1>
+        <h1 style={{ margin: 0, fontSize: "clamp(32px, 6vw, 56px)" }}>Catalog</h1>
         <p style={{ color: "#52525b", fontSize: 18 }}>
-          Products you saved for later.
+          Browse marketplace products, search faster, and save favorites.
         </p>
       </div>
 
-      {favoriteProducts.length === 0 ? (
-        <div style={{ display: "grid", gap: 12 }}>
-          <p style={{ margin: 0 }}>No favorites yet.</p>
-          <Link to="/catalog">Browse catalog</Link>
-        </div>
-      ) : (
-        <div
+      <div
+        style={{
+          display: "grid",
+          gap: 14,
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+        }}
+      >
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search products, vendors, categories..."
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: 18,
+            minHeight: 50,
+            borderRadius: 14,
+            border: "1px solid #d4d4d8",
+            padding: "0 14px",
+            fontSize: 16,
+            outline: "none",
+          }}
+        />
+
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          style={{
+            minHeight: 50,
+            borderRadius: 14,
+            border: "1px solid #d4d4d8",
+            padding: "0 14px",
+            fontSize: 16,
+            background: "white",
           }}
         >
-          {favoriteProducts.map((product) => (
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div style={{ color: "#71717a", fontWeight: 600 }}>
+        {filteredProducts.length} product(s) found
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+          gap: 18,
+        }}
+      >
+        {filteredProducts.map((product) => {
+          const favorite = isFavorite(product.id);
+
+          return (
             <article
               key={product.id}
               style={{
@@ -117,27 +177,28 @@ export default function FavoritesPage() {
                   <button
                     onClick={() => {
                       toggleFavorite(product.id);
-                      showToast("Removed from favorites");
+                      showToast(favorite ? "Removed from favorites" : "Saved to favorites");
                     }}
                     style={{
                       minHeight: 44,
                       padding: "10px 16px",
                       borderRadius: 12,
                       border: "1px solid #d4d4d8",
-                      background: "white",
-                      color: "#111827",
+                      background: favorite ? "#111827" : "white",
+                      color: favorite ? "white" : "#111827",
                       fontWeight: 700,
                       cursor: "pointer",
                     }}
                   >
-                    Remove
+                    {favorite ? "Saved" : "Favorite"}
                   </button>
                 </div>
               </div>
             </article>
-          ))}
-        </div>
-      )}
+          );
+        })}
+      </div>
     </section>
   );
-}
+}	
+

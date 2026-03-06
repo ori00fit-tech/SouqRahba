@@ -1,31 +1,55 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { vendors } from "../data/vendors";
 import { products } from "../data/products";
-import { useFavorites } from "../context/FavoritesContext";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 
-export default function FavoritesPage() {
-  const { favorites, toggleFavorite } = useFavorites();
+export default function VendorPage() {
+  const { id } = useParams();
   const { addToCart } = useCart();
   const { showToast } = useToast();
 
-  const favoriteProducts = products.filter((product) => favorites.includes(product.id));
+  const vendor = vendors.find((item) => item.id === id);
+
+  if (!vendor) {
+    return (
+      <div style={{ display: "grid", gap: 16 }}>
+        <h1>Vendor not found</h1>
+        <Link to="/catalog">Back to catalog</Link>
+      </div>
+    );
+  }
+
+  const vendorProducts = products.filter((product) => product.vendorId === vendor.id);
 
   return (
     <section style={{ display: "grid", gap: 24 }}>
-      <div>
-        <h1 style={{ margin: 0, fontSize: "clamp(32px, 6vw, 56px)" }}>Favorites</h1>
-        <p style={{ color: "#52525b", fontSize: 18 }}>
-          Products you saved for later.
+      <div
+        style={{
+          border: "1px solid #e4e4e7",
+          borderRadius: 22,
+          padding: 22,
+          background: "#fafaf9",
+          display: "grid",
+          gap: 10,
+        }}
+      >
+        <Link to="/catalog" style={{ textDecoration: "none", color: "#52525b" }}>
+          ← Back to catalog
+        </Link>
+
+        <h1 style={{ margin: 0, fontSize: "clamp(32px, 6vw, 56px)" }}>{vendor.name}</h1>
+        <div style={{ color: "#71717a", fontWeight: 700 }}>
+          {vendor.city} · {vendor.specialty}
+        </div>
+        <p style={{ margin: 0, color: "#52525b", lineHeight: 1.8, fontSize: 18 }}>
+          {vendor.description}
         </p>
       </div>
 
-      {favoriteProducts.length === 0 ? (
-        <div style={{ display: "grid", gap: 12 }}>
-          <p style={{ margin: 0 }}>No favorites yet.</p>
-          <Link to="/catalog">Browse catalog</Link>
-        </div>
-      ) : (
+      <div style={{ display: "grid", gap: 16 }}>
+        <h2 style={{ margin: 0 }}>Products by this vendor</h2>
+
         <div
           style={{
             display: "grid",
@@ -33,7 +57,7 @@ export default function FavoritesPage() {
             gap: 18,
           }}
         >
-          {favoriteProducts.map((product) => (
+          {vendorProducts.map((product) => (
             <article
               key={product.id}
               style={{
@@ -62,17 +86,6 @@ export default function FavoritesPage() {
                   <h3 style={{ margin: 0, fontSize: 20 }}>{product.name}</h3>
                   <strong>{product.price} MAD</strong>
                 </div>
-
-                <Link
-                  to={`/vendor/${product.vendorId}`}
-                  style={{
-                    color: "#71717a",
-                    fontWeight: 700,
-                    textDecoration: "none",
-                  }}
-                >
-                  by {product.vendor}
-                </Link>
 
                 <p style={{ margin: 0, color: "#52525b", lineHeight: 1.6 }}>
                   {product.description}
@@ -113,31 +126,12 @@ export default function FavoritesPage() {
                   >
                     Add to cart
                   </button>
-
-                  <button
-                    onClick={() => {
-                      toggleFavorite(product.id);
-                      showToast("Removed from favorites");
-                    }}
-                    style={{
-                      minHeight: 44,
-                      padding: "10px 16px",
-                      borderRadius: 12,
-                      border: "1px solid #d4d4d8",
-                      background: "white",
-                      color: "#111827",
-                      fontWeight: 700,
-                      cursor: "pointer",
-                    }}
-                  >
-                    Remove
-                  </button>
                 </div>
               </div>
             </article>
           ))}
         </div>
-      )}
+      </div>
     </section>
   );
 }

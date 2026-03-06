@@ -2,11 +2,13 @@ import { Link, useParams } from "react-router-dom";
 import { products } from "../data/products";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoritesContext";
+import { useToast } from "../context/ToastContext";
 
 export default function ProductPage() {
   const { id } = useParams();
   const { addToCart } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { showToast } = useToast();
 
   const product = products.find((item) => item.id === id);
 
@@ -54,7 +56,16 @@ export default function ProductPage() {
           {product.name}
         </h1>
 
-        <div style={{ color: "#71717a", fontWeight: 700 }}>by {product.vendor}</div>
+        <Link
+          to={`/vendor/${product.vendorId}`}
+          style={{
+            color: "#71717a",
+            fontWeight: 700,
+            textDecoration: "none",
+          }}
+        >
+          by {product.vendor}
+        </Link>
 
         <strong style={{ fontSize: 28 }}>{product.price} MAD</strong>
 
@@ -64,7 +75,10 @@ export default function ProductPage() {
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
           <button
-            onClick={() => addToCart(product)}
+            onClick={() => {
+              addToCart(product);
+              showToast("Product added to cart");
+            }}
             style={{
               width: "fit-content",
               minHeight: 48,
@@ -81,7 +95,10 @@ export default function ProductPage() {
           </button>
 
           <button
-            onClick={() => toggleFavorite(product.id)}
+            onClick={() => {
+              toggleFavorite(product.id);
+              showToast(favorite ? "Removed from favorites" : "Saved to favorites");
+            }}
             style={{
               width: "fit-content",
               minHeight: 48,
